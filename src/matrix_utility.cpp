@@ -43,35 +43,26 @@ void set_matrixes_separately(FP **A, FP **B, size_t M, size_t N, size_t K, std::
     }
 }
 
-// void set_matrix(FP **A, size_t M, size_t N, std::string src) {
-//     *A = (FP*)malloc(M * N * sizeof(FP));
-
-//     FP value;
-//     std::ifstream file(src, std::ios::binary);
-
-//     for (size_t i = 0; i < M * N; ++i) {
-//         file.read(reinterpret_cast<char*>(&value), sizeof(FP));
-//         (*A)[i] = value;
-//     }
-
-//     file.close();
-// }
-
 void set_matrix(FP **A, size_t M, size_t N, std::string src) {
     *A = (FP*)malloc(M * N * sizeof(FP));
 
     FP value;
     std::ifstream file(src, std::ios::binary);
 
-    for (size_t i = 0; i < M; ++i) {
-        for (size_t j = 0; j < N; ++j) {
-            file.read(reinterpret_cast<char*>(&value), sizeof(FP));
-            (*A)[i * N + j] = value;
-        }
+    for (size_t i = 0; i < M * N; ++i) {
+        file.read(reinterpret_cast<char*>(&value), sizeof(FP));
+        (*A)[i] = value;
     }
 
     file.close();
 }
+
+// void set_matrix(FP **A, size_t M, size_t N, const char* src) {
+//     *A = (FP*)malloc(M * N * sizeof(FP));
+//     FILE* file = fopen(src, "rb");
+//     fread(*A, sizeof(FP), M * N, file);
+//     fclose(file);
+// }
 
 void set_matrixes(FP **A, FP **B, size_t M, size_t N, size_t K, std::string file_src) {
     *A = (FP*)malloc(M * N * sizeof(FP));
