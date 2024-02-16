@@ -1,18 +1,6 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <cstring>
-#include <chrono>
-#include <windows.h>
-#define FP double
+#include "..\include\includes.h"
 
-size_t M = 1000;
-size_t N = 3000;
-size_t K = 4500;
-
-std::string file_src = "AB_matrix.txt";
-// std::string file_src = "mat.txt";
-
+// Reading params from terminal run
 void set_params(int argc, char* argv[]) {
     for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];
@@ -31,6 +19,30 @@ void set_params(int argc, char* argv[]) {
     }
 }
 
+void set_matrixes_separately(FP **A, FP **B, std::string src) {
+    *A = (FP*)malloc(M * N * sizeof(FP));
+    *B = (FP*)malloc(N * K * sizeof(FP));
+
+    std::string A_src = src + "A.npy";
+    std::string B_src = src + "B.npy";
+
+    FP value;
+    std::ifstream file(A_src, std::ios::binary);
+
+    for (size_t i = 0; i < M * N; ++i) {
+        file.read(reinterpret_cast<char*>(&value), sizeof(FP));
+        (*A)[i] = value;
+    }
+
+    file.close();
+    file.open(B_src, std::ios::binary);
+    
+    for (size_t i = 0; i < N * K; ++i) {
+        file.read(reinterpret_cast<char*>(&value), sizeof(FP));
+        (*B)[i] = value;
+    }
+}
+
 void set_matrixes(FP **A, FP **B) {
     *A = (FP*)malloc(M * N * sizeof(FP));
     *B = (FP*)malloc(N * K * sizeof(FP));
@@ -41,12 +53,14 @@ void set_matrixes(FP **A, FP **B) {
     std::string num_str;
     double num;
 
+    // Filling A matrix
     for (size_t i = 0; i < M * N; ++i) {
         file >> num_str;
         num = std::stod(num_str);
         (*A)[i] = num;
     }
 
+    // Filling B matrix
     for (size_t i = 0; i < N * K; ++i) {
         file >> num_str;
         num = std::stod(num_str);
@@ -54,26 +68,6 @@ void set_matrixes(FP **A, FP **B) {
     }
 
     file.close();
-}
-
-void naive_matrix_mult(FP *A, FP *B, FP *C) {
-    for (size_t i = 0; i < M; ++i)
-        for (size_t j = 0; j < K; ++j) {
-            C[i * K + j] = 0;
-            for (size_t k = 0; k < N; ++k) 
-                C[i * K + j] += A[i * N + k] * B[K * k + j];
-        }
-}
-
-void transposed_nmm(FP *A, FP *B, FP *C) {
-    
-    memset(C, 0, M * K * sizeof(FP));
-
-    for (size_t i = 0; i < M; ++i)
-        for (size_t k = 0; k < N; ++k)
-            for (size_t j = 0; j < K; ++j) 
-                C[i * K + j] += A[i * N + k] * B[K * k + j];
-        
 }
 
 void print(size_t m, size_t n, FP *A) {
@@ -97,38 +91,4 @@ void fprint(size_t m, size_t n, FP *A, std::string dest) {
     }
 
     file.close();
-}
-
-int main(int argc, char* argv[]) {
-    
-    FP *A, *B;
-
-    set_params(argc, argv);
-    set_matrixes(&A, &B);
-
-    FP *C = (FP*)malloc(M * K * sizeof(FP));
-
-    double t1, t2, dt;
-
-    auto start = std::chrono::high_resolution_clock::now();
-
-    // naive_matrix_mult(A, B, C);
-    transposed_nmm(A, B, C);
-
-    auto end = std::chrono::high_resolution_clock::now();
-    auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    std::cout << "Elapsed time: " << elapsed_time.count() << " milliseconds" << std::endl;
-
-
-    // print(M, N, A);
-    // print(N, K, B);
-    // print(M, K, C);
-
-    fprint(M, K, C, "PROGRAMM_C_RES.txt");
-
-    free(A);
-    free(B);
-    free(C);
-
-    return 0;
 }
