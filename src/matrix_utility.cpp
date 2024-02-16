@@ -1,7 +1,7 @@
 #include "..\include\includes.h"
 
 // Reading params from terminal run
-void set_params(int argc, char* argv[]) {
+void set_params(int argc, char* argv[], size_t& M, size_t& N, size_t& K, std::string& file_src) {
     for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];
         if (arg.find("M=") == 0 || arg.find("m=") == 0) {
@@ -19,7 +19,7 @@ void set_params(int argc, char* argv[]) {
     }
 }
 
-void set_matrixes_separately(FP **A, FP **B, std::string src) {
+void set_matrixes_separately(FP **A, FP **B, size_t M, size_t N, size_t K, std::string src) {
     *A = (FP*)malloc(M * N * sizeof(FP));
     *B = (FP*)malloc(N * K * sizeof(FP));
 
@@ -43,7 +43,37 @@ void set_matrixes_separately(FP **A, FP **B, std::string src) {
     }
 }
 
-void set_matrixes(FP **A, FP **B) {
+// void set_matrix(FP **A, size_t M, size_t N, std::string src) {
+//     *A = (FP*)malloc(M * N * sizeof(FP));
+
+//     FP value;
+//     std::ifstream file(src, std::ios::binary);
+
+//     for (size_t i = 0; i < M * N; ++i) {
+//         file.read(reinterpret_cast<char*>(&value), sizeof(FP));
+//         (*A)[i] = value;
+//     }
+
+//     file.close();
+// }
+
+void set_matrix(FP **A, size_t M, size_t N, std::string src) {
+    *A = (FP*)malloc(M * N * sizeof(FP));
+
+    FP value;
+    std::ifstream file(src, std::ios::binary);
+
+    for (size_t i = 0; i < M; ++i) {
+        for (size_t j = 0; j < N; ++j) {
+            file.read(reinterpret_cast<char*>(&value), sizeof(FP));
+            (*A)[i * N + j] = value;
+        }
+    }
+
+    file.close();
+}
+
+void set_matrixes(FP **A, FP **B, size_t M, size_t N, size_t K, std::string file_src) {
     *A = (FP*)malloc(M * N * sizeof(FP));
     *B = (FP*)malloc(N * K * sizeof(FP));
 
@@ -70,23 +100,23 @@ void set_matrixes(FP **A, FP **B) {
     file.close();
 }
 
-void print(size_t m, size_t n, FP *A) {
+void print(FP *A, size_t M, size_t N) {
     
-    for (size_t i = 0; i < m; ++i) {
-        for (size_t j = 0; j < n; ++j)
-            std::cout << A[i * n + j] << ' ';
+    for (size_t i = 0; i < M; ++i) {
+        for (size_t j = 0; j < N; ++j)
+            std::cout << A[i * N + j] << ' ';
         std::cout << '\n';
     }
 }
 
-void fprint(size_t m, size_t n, FP *A, std::string dest) {
+void fprint(FP *A, size_t M, size_t N, std::string dest) {
     
     std::ofstream file;
     file.open(dest);
 
-    for (size_t i = 0; i < m; ++i) {
-        for (size_t j = 0; j < n; ++j)
-            file << A[i * n + j] << ' ';
+    for (size_t i = 0; i < M; ++i) {
+        for (size_t j = 0; j < N; ++j)
+            file << A[i * N + j] << ' ';
         file << '\n';
     }
 

@@ -1,10 +1,8 @@
 #pragma once
+#include "root.h"
 
-#include <string>
-#define FP double
-
-void set_params(int argc, char* argv[]);
-void set_matrixes_separately(FP **A, FP **B, std::string src);
-void set_matrixes(FP **A, FP **B);
-void print(size_t m, size_t n, FP *A);
-void fprint(size_t m, size_t n, FP *A, std::string dest);
+void set_params(int argc, char* argv[], size_t& M, size_t& N, size_t& K, std::string& src);
+void set_matrix(FP **A, size_t M, size_t N, std::string src);
+void set_matrixes(FP **A, FP **B, size_t M, size_t N, size_t K, std::string src);
+void print(FP *A, size_t M, size_t N);
+void fprint(FP *A, size_t M, size_t N, std::string dest);

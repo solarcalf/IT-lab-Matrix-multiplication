@@ -1,9 +1,5 @@
 #pragma once
 #include "root.h"
 
-void test_1();
-void test_2();
-void test_3();
-void test_4();
-void test_5();
-void test_all();
+std::pair<FP, bool> test(size_t M, size_t N, size_t K, MethodPointer method, size_t test_num);
+void test_all(MethodPointer method);

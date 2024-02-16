@@ -2,32 +2,19 @@
 
 int main(int argc, char* argv[]) {
 
-    FP *A, *B;
+    // test_all((MethodPointer)&transposed_nmm);
+    // test_all((MethodPointer)&naive_matrix_mult);
 
-    set_params(argc, argv);
-    set_matrixes(&A, &B);
+    size_t M = 3, N = 3, K = 1;
 
-    FP *C = (FP*)malloc(M * K * sizeof(FP));
+    FP *A, *B, *C_cor;
+    set_matrix(&A, M, N, "..\\test\\test_data_6\\A.npy");
+    set_matrix(&B, N, K, "..\\test\\test_data_6\\B.npy");
+    set_matrix(&A, M, K, "..\\test\\test_data_6\\C.npy");
 
-    auto start = std::chrono::high_resolution_clock::now();
-
-    // naive_matrix_mult(A, B, C);
-    transposed_nmm(A, B, C);
-
-    auto end = std::chrono::high_resolution_clock::now();
-    auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    std::cout << "Elapsed time: " << elapsed_time.count() << " milliseconds" << '\n';
-
-    // For small matrixes
-    // print(M, N, A);
-    // print(N, K, B);
-    // print(M, K, C);
-
-    fprint(M, K, C, "PROGRAMM_C_RES.txt");
-
-    free(A);
-    free(B);
-    free(C);
+    print(A, M, N);
+    print(B, N, K);
+    print(C_cor, M, K);
 
     return 0;
 }
