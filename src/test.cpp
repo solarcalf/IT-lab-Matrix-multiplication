@@ -27,9 +27,9 @@ std::pair<FP, bool> test(size_t M, size_t N, size_t K, MethodPointer method, siz
 
 void test_all(MethodPointer method) {
     size_t tests_amount = 5;
-    size_t M[]{100, 987, 543, 185, 15};
-    size_t N[]{3000, 987, 543, 862, 853};
-    size_t K[]{450, 1, 543, 712, 12};
+    size_t M[]{100, 347, 1000, 1000, 5000};
+    size_t N[]{100, 987, 1000, 10000, 10000};
+    size_t K[]{100, 297, 1000, 1000, 1000};
 
     for (size_t i = 0; i < tests_amount; ++i) {
         auto [time, correct] = test(M[i], N[i], K[i], method, i + 1);
